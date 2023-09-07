@@ -6,4 +6,12 @@ using System.Threading.Tasks;
 
 namespace DatabaseEngine
 {
+    public abstract class DatabaseFileManager
+    {
+    }
+
+    public class TxtDatabaseFileManager : DatabaseFileManager
+    {
+
+    }
 }

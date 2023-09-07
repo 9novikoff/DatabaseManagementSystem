@@ -1,6 +1,7 @@
 ﻿namespace DatabaseEngine
 {
-    class DatabaseEngine
+    public class DatabaseEngine
     {
+
     }
 }
