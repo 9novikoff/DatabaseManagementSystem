@@ -10,11 +10,12 @@ namespace DatabaseEngine
 
     public class Table
     {
-        public string Name { get; set; }
-        public List<IType> Types { get; set; }
-        public List<Row> Rows { get; set; }
+	    public string Name { get; set; }
+	    public List<IType> Types { get; set; }
+	    public List<string> ColumnNames { get; set; }
+	    public List<Row> Rows { get; set; }
         public List<int> PrimaryKeysIndexes { get; set; }
-        public List<Dictionary<List<int>, string>> ForeignKeysIndexesWithTableNames { get; set; }
+        public Dictionary<List<int>, string> ForeignKeysIndexesWithTableNames { get; set; }
     }
 
     public class Row
