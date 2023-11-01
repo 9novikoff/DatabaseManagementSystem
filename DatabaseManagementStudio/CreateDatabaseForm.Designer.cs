@@ -83,6 +83,7 @@
             Controls.Add(CreateDatabaseButton);
             Controls.Add(DatabaseNameTextBox);
             Controls.Add(DatabaseNameLabel);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "CreateDatabaseForm";
             Text = "CreateDatabaseForm";
             ResumeLayout(false);

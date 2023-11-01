@@ -12,7 +12,8 @@ namespace DatabaseManagementStudio
 
         private void NewDatabaseButton_Click(object sender, EventArgs e)
         {
-            CreateDatabaseForm createDatabaseForm = new CreateDatabaseForm(_databaseEngine);
+            var notificationForm = new NotificationForm();
+            var createDatabaseForm = new CreateDatabaseForm(_databaseEngine, notificationForm);
             createDatabaseForm.Show();
             createDatabaseForm.Owner = this;
             this.Visible = false;

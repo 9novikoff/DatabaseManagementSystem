@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DatabaseEngine;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,16 +13,20 @@ namespace DatabaseManagementStudio
 {
     public partial class CreateDatabaseForm : Form
     {
-        DatabaseEngine.DatabaseEngine _databaseEngine;
-        public CreateDatabaseForm(DatabaseEngine.DatabaseEngine engine)
+        private readonly DatabaseEngine.DatabaseEngine _databaseEngine;
+        private readonly NotificationForm notificationForm;
+        public CreateDatabaseForm(DatabaseEngine.DatabaseEngine engine, NotificationForm form)
         {
             InitializeComponent();
             _databaseEngine = engine;
+            notificationForm = form;
         }
 
         private void CreateDatabaseButton_Click(object sender, EventArgs e)
         {
-
+            var validation = new ValidationResult();
+            _databaseEngine.CreateDatabase(DatabaseNameTextBox.Text, validation);
+            notificationForm.Notify(validation.Message);
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
