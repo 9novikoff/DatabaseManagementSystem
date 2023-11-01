@@ -32,5 +32,10 @@ namespace DatabaseManagementStudio
         {
             this.Visible = false;
         }
+
+        private void NotificationLabel_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

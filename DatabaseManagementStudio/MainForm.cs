@@ -18,5 +18,19 @@ namespace DatabaseManagementStudio
             createDatabaseForm.Owner = this;
             this.Visible = false;
         }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void ReviewButton_Click(object sender, EventArgs e)
+        {
+            var notificationForm = new NotificationForm();
+            var reviewForm = new DatabasesListForm(_databaseEngine, notificationForm);
+            reviewForm.Show();
+            reviewForm.Owner = this;
+            this.Visible = false;
+        }
     }
 }

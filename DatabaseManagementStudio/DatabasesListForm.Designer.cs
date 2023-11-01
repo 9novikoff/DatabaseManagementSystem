@@ -1,6 +1,6 @@
 ﻿namespace DatabaseManagementStudio
 {
-    partial class NotificationForm
+    partial class DatabasesListForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,48 +28,48 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DatabasesList = new ListBox();
             CloseButton = new Button();
-            NotificationLabel = new Label();
             SuspendLayout();
+            // 
+            // DatabasesList
+            // 
+            DatabasesList.BackColor = Color.LightGray;
+            DatabasesList.FormattingEnabled = true;
+            DatabasesList.ItemHeight = 20;
+            DatabasesList.Location = new Point(12, 12);
+            DatabasesList.Name = "DatabasesList";
+            DatabasesList.Size = new Size(1238, 584);
+            DatabasesList.TabIndex = 0;
+            DatabasesList.DoubleClick += DatabasesList_DoubleClick;
             // 
             // CloseButton
             // 
             CloseButton.BackColor = Color.LightGray;
-            CloseButton.Location = new Point(45, 113);
+            CloseButton.Location = new Point(12, 611);
             CloseButton.Name = "CloseButton";
             CloseButton.Size = new Size(200, 50);
-            CloseButton.TabIndex = 0;
-            CloseButton.Text = "Close";
+            CloseButton.TabIndex = 1;
+            CloseButton.Text = "Cancel";
             CloseButton.UseVisualStyleBackColor = false;
             CloseButton.Click += CloseButton_Click;
             // 
-            // NotificationLabel
-            // 
-            NotificationLabel.AutoSize = true;
-            NotificationLabel.Location = new Point(12, 9);
-            NotificationLabel.Name = "NotificationLabel";
-            NotificationLabel.Size = new Size(29, 20);
-            NotificationLabel.TabIndex = 1;
-            NotificationLabel.Text = "OK";
-            NotificationLabel.Click += NotificationLabel_Click;
-            // 
-            // NotificationForm
+            // DatabasesListForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(290, 175);
-            Controls.Add(NotificationLabel);
+            ClientSize = new Size(1262, 673);
             Controls.Add(CloseButton);
-            Name = "NotificationForm";
-            Text = "NotificationForm";
+            Controls.Add(DatabasesList);
+            Name = "DatabasesListForm";
+            Text = "DatabasesListForm";
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
+        private ListBox DatabasesList;
         private Button CloseButton;
-        private Label NotificationLabel;
     }
 }

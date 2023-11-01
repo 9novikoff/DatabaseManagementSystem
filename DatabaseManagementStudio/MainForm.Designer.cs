@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             button3 = new Button();
-            button2 = new Button();
+            ReviewButton = new Button();
             NewDatabaseButton = new Button();
             SuspendLayout();
             // 
@@ -44,16 +44,17 @@
             button3.Text = "Load database";
             button3.UseVisualStyleBackColor = false;
             // 
-            // button2
+            // ReviewButton
             // 
-            button2.BackColor = Color.LightGray;
-            button2.ForeColor = Color.Black;
-            button2.Location = new Point(12, 68);
-            button2.Name = "button2";
-            button2.Size = new Size(200, 50);
-            button2.TabIndex = 7;
-            button2.Text = "Review available databases";
-            button2.UseVisualStyleBackColor = false;
+            ReviewButton.BackColor = Color.LightGray;
+            ReviewButton.ForeColor = Color.Black;
+            ReviewButton.Location = new Point(12, 68);
+            ReviewButton.Name = "ReviewButton";
+            ReviewButton.Size = new Size(200, 50);
+            ReviewButton.TabIndex = 7;
+            ReviewButton.Text = "Review available databases";
+            ReviewButton.UseVisualStyleBackColor = false;
+            ReviewButton.Click += ReviewButton_Click;
             // 
             // NewDatabaseButton
             // 
@@ -74,19 +75,20 @@
             BackColor = Color.DimGray;
             ClientSize = new Size(1262, 673);
             Controls.Add(button3);
-            Controls.Add(button2);
+            Controls.Add(ReviewButton);
             Controls.Add(NewDatabaseButton);
             Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "MainForm";
             Text = "DatabaseManagementStudio";
+            FormClosing += MainForm_FormClosing;
             ResumeLayout(false);
         }
 
         #endregion
         private TextBox textBox1;
         private Button button3;
-        private Button button2;
+        private Button ReviewButton;
         private Button NewDatabaseButton;
     }
 }
