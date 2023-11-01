@@ -16,6 +16,7 @@ namespace DatabaseEngine
 	    public List<Row> Rows { get; set; }
         public List<int> PrimaryKeysIndexes { get; set; }
         public Dictionary<List<int>, string> ForeignKeysIndexesWithTableNames { get; set; }
+        public bool IsReferenced { get; set; }
     }
 
     public class Row
@@ -66,7 +67,7 @@ namespace DatabaseEngine
     {
         public bool IsValid(string value)
         {
-            var splitValue = value.Trim().Split(',');
+            var splitValue = value.Trim().Split(' ');
             var (firstInteger, secondInteger) = (splitValue[0], splitValue[1]);
             return int.TryParse(firstInteger, out var firstConvertedInteger) && int.TryParse(secondInteger, out var secondConvertedInteger) 
                                                                          && firstConvertedInteger <= secondConvertedInteger;

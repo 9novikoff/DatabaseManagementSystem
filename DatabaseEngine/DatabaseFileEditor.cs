@@ -9,45 +9,97 @@ namespace DatabaseEngine
 {
     public abstract class DatabaseFileEditor
     {
-        protected readonly string DatabasesPath;
-        protected readonly string DatabaseName;
-        protected readonly string TableName;
-		protected readonly string FullPath;
-        public DatabaseFileEditor(string databasesPath, string databaseName, string tableName)
+        public DatabaseFileEditor()
         {
-            DatabasesPath = databasesPath;
-            DatabaseName = databaseName;
-            TableName = tableName;
-            FullPath = $"{databasesPath}/{DatabaseName}/{TableName}";
+
         }
     }
 
     public class TxtDatabaseFileEditor : DatabaseFileEditor
     {
-        public TxtDatabaseFileEditor(string databasesPath, string databaseName, string tableName) : base(databasesPath, databaseName, tableName)
+        public TxtDatabaseFileEditor() : base()
         { }
 
-        public Dictionary<List<int>, string> GetForeignKeys(string tableName)
+        public bool IsReferencedFile(string fullPath)
+		{
+            try
+            {
+                string line = File.ReadLines(fullPath).Take(1).First();
+				if (line[0].Equals('R'))
+				{
+					return true;
+				}
+				return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+		public List<IType> GetTypes(string fullPath)
+		{
+            try
+            {
+				var res = new List<IType>();
+                string line = File.ReadLines(fullPath).Skip(1).Take(1).First();
+				var typeNames = line.Split(',').ToList();
+                foreach (var typeName in typeNames)
+                {
+					var type = System.Reflection.Assembly.GetExecutingAssembly().CreateInstance(typeName) as IType;
+					res.Add(type);
+                }
+				return res;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+		public List<string> GetColumnNames(string fullPath)
+		{
+            try
+            {
+                string line = File.ReadLines(fullPath).Skip(2).Take(1).First();
+                return line.Split(',').ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public List<int> GetPrimaryKeyIndexes(string fullPath)
+        {
+            try
+            {
+                string line = File.ReadLines(fullPath).Skip(3).Take(1).First();
+                return line.Split(',').Select(int.Parse).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public Dictionary<List<int>, string> GetForeignKeys(string fullPath)
         {
 	        try
 	        {
                 var result = new Dictionary<List<int>, string>();
-                using var sr = new StreamReader(FullPath);
-                var line = sr.ReadLine();
-                while (line != null)
+                string line = File.ReadLines(fullPath).Skip(4).Take(1).First();
+				var multipleForeignKeysTables = line.Split(';');
+                foreach (var foreignKeys in multipleForeignKeysTables)
                 {
-                    line = sr.ReadLine();
-                    if (!line.StartsWith("FK:"))
-                        line = null;
-                    line = line.Substring(0, 3);
-                    var index = line.IndexOf(':');
-                    var refferencedTableName = line.Substring(index + 1);
-                    line = line.Substring(0, index);
-                    var indexes = line.Split(',').Select(i => int.Parse(i)).ToList();
-                    result.Add(indexes, refferencedTableName);
-					line = sr.ReadLine();
-				}
-
+                    var splitedKeysAndTableName = foreignKeys.Split(':');
+                    result.Add(splitedKeysAndTableName[0].Split(',').Select(int.Parse).ToList(), splitedKeysAndTableName[1]);
+                }
                 return result;
 			}
 	        catch (Exception e)
@@ -57,42 +109,32 @@ namespace DatabaseEngine
 	        }
         }
 
-        public List<int> GetPrimaryKeyIndexes()
+		
+        public List<List<string>> GetRows(string fullPath)
         {
-	        try
-	        {
-		        using var sr = new StreamReader(FullPath);
-                var line = sr.ReadLine();
-		        var startIndex = 3;
-		        var lineWithoutPk = line.Remove(startIndex);
-		        var indexes = lineWithoutPk.Split(',');
-		        return indexes.Select(x => int.Parse(x)).ToList();
-	        }
-	        catch (Exception e)
-	        {
-		        Console.WriteLine(e);
-		        throw;
-	        }
-		}
+            try
+            {
+                var result = new List<List<string>>();
+                var lines = File.ReadLines(fullPath).Skip(5);
+                foreach (var line in lines) 
+                {
+                    result.Add(line.Split(',').ToList());
+                }
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
 
-        public IEnumerable<List<string>> GetRows()
-        {
-			using var sr = new StreamReader(FullPath);
-			SkipTableInfoRows(sr);
-			var line = sr.ReadLine();
-			while (line != null)
-			{
-				var row = line.Split(',').ToList();
-				yield return row;
-			}
-		}
 
-		public void WritePrimaryKeysIndexes(List<int> indexes)
+        public void WritePrimaryKeysIndexes(string fullPath, List<int> indexes)
 		{
-			try
-			{
-				using var sw = new StreamWriter(FullPath);
-				sw.WriteLine($"PK:{string.Join(",", indexes.ToArray())}");
+            try
+            {
+                File.AppendAllLines(fullPath, new List<string>() {$"{string.Join(",", indexes.ToArray())}"});
 			}
 			catch (Exception e)
 			{
@@ -101,16 +143,16 @@ namespace DatabaseEngine
 			}
 		}
 
-		public void WriteForeignKeysIndexes(Dictionary<List<int>, string> indexesWithTableName)
+		public void WriteForeignKeysIndexes(string fullPath, Dictionary<List<int>, string> indexesWithTableName)
 		{
 			try
 			{
-				using var sw = new StreamWriter(FullPath);
+                var line = "";
 				foreach (var item in indexesWithTableName)
 				{
-					sw.WriteLine($"FK:{string.Join(",", item.Key.ToArray())}:{item.Value}");
+					line += $"{string.Join(",", item.Key.ToArray())}:{item.Value};";
 				}
-				sw.WriteLine();
+                File.AppendAllLines(fullPath, new List<string>() { line });
 			}
 			catch (Exception e)
 			{
@@ -119,12 +161,11 @@ namespace DatabaseEngine
 			}
 		}
 
-		public void WriteRow(List<string> row) 
+		public void AppendList(string fullPath, List<string> row) 
 		{
 			try
 			{
-				using var sw = new StreamWriter(FullPath);
-				sw.WriteLine($"{string.Join(",", row.ToArray())}");
+				File.AppendAllLines(fullPath, new List<string>() { $"{string.Join(",", row.ToArray())}" });
 			}
 			catch (Exception e)
 			{
@@ -133,27 +174,43 @@ namespace DatabaseEngine
 			}
 		}
 
-		private void SkipTableInfoRows(StreamReader writer)
+        public void AppendString(string  fullPath, string str) 
         {
-			try
-			{
-				var line = writer.ReadLine();
-				while (line != null)
-				{
-					if (!(line.StartsWith("PK:") || line.StartsWith("FK:")))
-					{
-						line = null;
-					}
-					line = writer.ReadLine();
-				}
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-				throw;
-			}
-		}
+            try
+            {
+                File.AppendAllLines(fullPath, new List<string>() { str });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
 
+		public List<string> GetAllFileLines(string fullPath)
+		{
+            try
+            {
+				return File.ReadAllLines(fullPath).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
 
+		public void RewriteLines(string fullPath, List<string> lines)
+		{
+            try
+            {
+				File.WriteAllLines(fullPath, lines);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
 	}
 }
