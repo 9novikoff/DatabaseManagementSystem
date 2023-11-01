@@ -18,12 +18,12 @@ namespace DatabaseEngine
             if (names.Contains(databaseName))
             {
                 validationResult.IsValid = false;
-                validationResult.ErrorMessage = "Database with that name already exists";
+                validationResult.Message = "Database with that name already exists";
                 return;
             }
 
             validationResult.IsValid = true;
-            validationResult.ErrorMessage = "Database has been successfully created";
+            validationResult.Message = "Database has been successfully created";
 
             _manager.CreateDatabaseFile(databaseName);
         }
@@ -39,12 +39,12 @@ namespace DatabaseEngine
             if (!names.Contains(databaseName))
             {
                 validationResult.IsValid = false;
-                validationResult.ErrorMessage = "Database with that name does not exist";
+                validationResult.Message = "Database with that name does not exist";
                 return null;
             }
 
             validationResult.IsValid = true;
-            validationResult.ErrorMessage = "Database successfully received";
+            validationResult.Message = "Database successfully received";
 
             return _manager.GetDatabase(databaseName);
         }
@@ -60,7 +60,7 @@ namespace DatabaseEngine
             if (names.Contains(table.Name))
             {
                 validationResult.IsValid = false;
-                validationResult.ErrorMessage = "Table with that name already exists";
+                validationResult.Message = "Table with that name already exists";
                 return;
             }
 
