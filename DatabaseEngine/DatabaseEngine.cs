@@ -12,7 +12,7 @@ namespace DatabaseEngine
             _manager = new DatabaseFileManager(new TxtDatabaseFileEditor(), _databasesPath);
         }
 
-        public void CreateDatabase(string databaseName, ref ValidationResult validationResult)
+        public void CreateDatabase(string databaseName, ValidationResult validationResult)
         {
             var names = GetDatabaseNames();
             if (names.Contains(databaseName))
@@ -33,7 +33,7 @@ namespace DatabaseEngine
             return _manager.GetAllDatabaseNames();
         }
 
-        public Database? GetDatabase(string databaseName, ref ValidationResult validationResult)
+        public Database? GetDatabase(string databaseName, ValidationResult validationResult)
         {
             var names = GetDatabaseNames();
             if (!names.Contains(databaseName))
@@ -54,7 +54,7 @@ namespace DatabaseEngine
             return _manager.GetTableNames(databaseName);
         }
 
-        public void CreateTable(string databaseName, Table table, ref ValidationResult validationResult)
+        public void CreateTable(string databaseName, Table table, ValidationResult validationResult)
         {
             var names = GetTableNames(databaseName); 
             if (names.Contains(table.Name))
