@@ -31,7 +31,10 @@ namespace DatabaseManagementStudio
 
         private void DatabasesList_DoubleClick(object sender, EventArgs e)
         {
-            notificationForm.Notify(DatabasesList.SelectedItem as string);
+            DatabaseTablesListform form = new DatabaseTablesListform(_databaseEngine, notificationForm, DatabasesList.SelectedItem as string);
+            form.Show();
+            form.Owner = this;
+            this.Visible = false;
         }
     }
 }
