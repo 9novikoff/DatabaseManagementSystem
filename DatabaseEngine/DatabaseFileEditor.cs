@@ -25,7 +25,7 @@ namespace DatabaseEngine
             try
             {
                 string line = File.ReadLines(fullPath).Take(1).First();
-				if (line[0].Equals('R'))
+				if (!string.IsNullOrEmpty(line) && line[0].Equals('R'))
 				{
 					return true;
 				}
@@ -47,7 +47,7 @@ namespace DatabaseEngine
 				var typeNames = line.Split(',').ToList();
                 foreach (var typeName in typeNames)
                 {
-					var type = System.Reflection.Assembly.GetExecutingAssembly().CreateInstance(typeName) as IType;
+                    var type = Activator.CreateInstance(Type.GetType("DatabaseEngine." + typeName + ", DatabaseEngine")) as IType;
 					res.Add(type);
                 }
 				return res;
@@ -95,7 +95,7 @@ namespace DatabaseEngine
                 var result = new Dictionary<List<int>, string>();
                 string line = File.ReadLines(fullPath).Skip(4).Take(1).First();
 				var multipleForeignKeysTables = line.Split(';');
-                foreach (var foreignKeys in multipleForeignKeysTables)
+                foreach (var foreignKeys in multipleForeignKeysTables.Where(s => !string.IsNullOrEmpty(s)))
                 {
                     var splitedKeysAndTableName = foreignKeys.Split(':');
                     result.Add(splitedKeysAndTableName[0].Split(',').Select(int.Parse).ToList(), splitedKeysAndTableName[1]);

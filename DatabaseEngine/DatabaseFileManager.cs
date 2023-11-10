@@ -53,8 +53,8 @@ namespace DatabaseEngine
 
         public List<string?> GetTableNames(string databaseName)
         {
-            return Directory.GetDirectories(BuildPath(databaseName))
-                .Select(Path.GetFileName)
+            return Directory.GetFiles(BuildPath(databaseName))
+                .Select(Path.GetFileNameWithoutExtension)
                 .ToList();
         }
 
@@ -75,7 +75,6 @@ namespace DatabaseEngine
         public void AddTableToDatabaseFile(string databaseName, Table table)
         {
             var path = BuildPath(databaseName, table.Name);
-            Directory.CreateDirectory(path);
             _txtEditor.AppendString(path, table.IsReferenced ? "R" : "");
             _txtEditor.AppendList(path, table.Types.Select(x => x.GetType().Name).ToList());
             _txtEditor.AppendList(path, table.ColumnNames);
@@ -84,10 +83,10 @@ namespace DatabaseEngine
             table.Rows.ForEach(x => _txtEditor.AppendList(path, x.Values));
         }
 
-        public void RemoveTableFromDatabaseFile(string databaseName, Table table)
+        public void RemoveTableFromDatabaseFile(string databaseName, string tableName)
         {
-            var path = BuildPath(databaseName, table.Name);
-            Directory.Delete(path, true);
+            var path = BuildPath(databaseName, tableName);
+            File.Delete(path);
         }
 
         public void AddAttributeToTableFile(IType type, string name, string tableName, string databaseName)
@@ -123,12 +122,12 @@ namespace DatabaseEngine
 
         private string BuildPath(string databaseName)
         {
-            return $"{_databasesPath}/{databaseName}";
+            return $"{_databasesPath}\\{databaseName}";
         }
 
         private string BuildPath(string databaseName, string tableName)
         {
-            return $"{_databasesPath}/{databaseName}/{tableName}.txt";
+            return $"{_databasesPath}{databaseName}\\{tableName}.txt";
         }
 
     }

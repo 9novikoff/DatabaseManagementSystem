@@ -14,13 +14,22 @@ namespace DatabaseManagementStudio
     {
         private readonly DatabaseEngine.DatabaseEngine _databaseEngine;
         private readonly NotificationForm notificationForm;
+        private readonly string _databaseName;
         public DatabaseTablesListform(DatabaseEngine.DatabaseEngine engine, NotificationForm form, string databaseName)
         {
             InitializeComponent();
             _databaseEngine = engine;
             notificationForm = form;
+            _databaseName = databaseName;
             TablesList.BeginUpdate();
-            _databaseEngine.GetTableNames(databaseName).ForEach(name => TablesList.Items.Add(name));
+            _databaseEngine.GetTableNames(_databaseName).ForEach(name => TablesList.Items.Add(name));
+            TablesList.SelectedItem = TablesList.Items[0];
+        }
+
+        public void UpdateList()
+        {
+            TablesList.Items.Clear();
+            _databaseEngine.GetTableNames(_databaseName).ForEach(name => TablesList.Items.Add(name));
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -31,7 +40,16 @@ namespace DatabaseManagementStudio
 
         private void CreateTableButton_Click(object sender, EventArgs e)
         {
+            var form = new TableForm(_databaseEngine, notificationForm, _databaseName, this);
+            form.Show();
+            this.Visible = false;
+        }
 
+        private void TablesList_DoubleClick(object sender, EventArgs e)
+        {
+            var form = new TableForm(_databaseEngine, notificationForm, _databaseName, this, TablesList.SelectedItem as string);
+            form.Show();
+            this.Visible = false;
         }
     }
 }

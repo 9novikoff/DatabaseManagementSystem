@@ -56,13 +56,14 @@
             // TablesList
             // 
             TablesList.BackColor = Color.LightGray;
-            TablesList.ForeColor = SystemColors.Window;
+            TablesList.ForeColor = SystemColors.ControlText;
             TablesList.FormattingEnabled = true;
             TablesList.ItemHeight = 20;
             TablesList.Location = new Point(12, 12);
             TablesList.Name = "TablesList";
             TablesList.Size = new Size(1238, 584);
             TablesList.TabIndex = 2;
+            TablesList.DoubleClick += TablesList_DoubleClick;
             // 
             // DatabaseTablesListform
             // 
