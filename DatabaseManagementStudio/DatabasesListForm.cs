@@ -1,4 +1,4 @@
-﻿using DatabaseEngine;
+﻿using DatabaseManagementSystemDatabaseEngine;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,16 +13,19 @@ namespace DatabaseManagementStudio
 {
     public partial class DatabasesListForm : Form
     {
-        private readonly DatabaseEngine.DatabaseEngine _databaseEngine;
+        private readonly DatabaseManagementSystemDatabaseEngine.DatabaseEngine _databaseEngine;
         private readonly NotificationForm notificationForm;
-        public DatabasesListForm(DatabaseEngine.DatabaseEngine engine, NotificationForm form)
+        public DatabasesListForm(DatabaseManagementSystemDatabaseEngine.DatabaseEngine engine, NotificationForm form)
         {
             InitializeComponent();
             _databaseEngine = engine;
             notificationForm = form;
             DatabasesList.BeginUpdate();
             _databaseEngine.GetDatabaseNames().ForEach(name => DatabasesList.Items.Add(name));
-            DatabasesList.SelectedItem = DatabasesList.Items[0];
+            if(DatabasesList.Items.Count > 0 )
+            {
+                DatabasesList.SelectedItem = DatabasesList.Items[0];
+            }
         }
 
         private void CloseButton_Click(object sender, EventArgs e)

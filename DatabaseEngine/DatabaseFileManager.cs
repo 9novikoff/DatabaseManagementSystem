@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DatabaseEngine
+namespace DatabaseManagementSystemDatabaseEngine
 {
     public class DatabaseFileManager
     {
@@ -28,7 +28,7 @@ namespace DatabaseEngine
         public Database GetDatabase(string databaseName)
         {
             var path = BuildPath(databaseName);
-            var tableNames = GetTableNames(path);
+            var tableNames = GetTableNames(databaseName);
             return new Database() { Name = databaseName, Tables = tableNames.Select(x => GetTable(databaseName, x)).ToList() };
         }
 
@@ -89,36 +89,22 @@ namespace DatabaseEngine
             File.Delete(path);
         }
 
-        public void AddAttributeToTableFile(IType type, string name, string tableName, string databaseName)
+        public void AddRowIntoTableFile(List<string> data, string tableName, string databaseName)
         {
-
-        }
-
-        public void RemoveAttributeFromTableFile(IType type, string name, string tableName, string databaseName)
-        {
-
-        }
-
-		public void EditAttributeNameInTableFile(IType type, string name, string newName, string tableName)
-		{
-
-		}
-
-		public void AddRowIntoTableFile(List<string> data, string tableName, string databaseName)
-		{
             var path = BuildPath(databaseName, tableName);
             _txtEditor.AppendList(path, data);
         }
 
-		public void RemoveRowFromTableFile(List<string> primaryKeyValues, string tableName, string databaseName)
-		{
-
-		}
-
-		public void EditRowFromTableFile(List<string> primaryKeyValues, List<string> data, string tableName, string databaseName)
-		{
-
-		}
+        public void CopyDirectory(string path)
+        {
+            var databaseName = new DirectoryInfo(path).Name;
+            CreateDatabaseFile(databaseName);
+            
+            foreach (var file in Directory.GetFiles(path))
+            {
+                File.Copy(file, BuildPath(databaseName, Path.GetFileNameWithoutExtension(file)));
+            }
+        }
 
         private string BuildPath(string databaseName)
         {
@@ -127,9 +113,14 @@ namespace DatabaseEngine
 
         private string BuildPath(string databaseName, string tableName)
         {
-            return $"{_databasesPath}{databaseName}\\{tableName}.txt";
+            return $"{_databasesPath}\\{databaseName}\\{tableName}.txt";
         }
 
+        internal List<Database> GetDatabases()
+        {
+            var databasesNames = GetAllDatabaseNames();
+            return databasesNames.Select(n => GetDatabase(n)).ToList();
+        }
     }
 
 }

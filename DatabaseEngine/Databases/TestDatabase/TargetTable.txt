@@ -1,0 +1,6 @@
+
+Integer
+TestColumn
+0
+
+1

@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DatabaseEngine
+namespace DatabaseManagementSystemDatabaseEngine
 {
     public abstract class DatabaseFileEditor
     {
@@ -47,7 +47,7 @@ namespace DatabaseEngine
 				var typeNames = line.Split(',').ToList();
                 foreach (var typeName in typeNames)
                 {
-                    var type = Activator.CreateInstance(Type.GetType("DatabaseEngine." + typeName + ", DatabaseEngine")) as IType;
+                    var type = Activator.CreateInstance(Type.GetType("DatabaseManagementSystemDatabaseEngine." + typeName + ", DatabaseEngine")) as IType;
 					res.Add(type);
                 }
 				return res;

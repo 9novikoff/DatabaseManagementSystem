@@ -1,4 +1,4 @@
-﻿using DatabaseEngine;
+﻿using DatabaseManagementSystemDatabaseEngine;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,9 +13,9 @@ namespace DatabaseManagementStudio
 {
     public partial class CreateDatabaseForm : Form
     {
-        private readonly DatabaseEngine.DatabaseEngine _databaseEngine;
+        private readonly DatabaseManagementSystemDatabaseEngine.DatabaseEngine _databaseEngine;
         private readonly NotificationForm notificationForm;
-        public CreateDatabaseForm(DatabaseEngine.DatabaseEngine engine, NotificationForm form)
+        public CreateDatabaseForm(DatabaseManagementSystemDatabaseEngine.DatabaseEngine engine, NotificationForm form)
         {
             InitializeComponent();
             _databaseEngine = engine;

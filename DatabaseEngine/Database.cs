@@ -1,6 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿using HotChocolate;
+using System.Text.RegularExpressions;
 
-namespace DatabaseEngine
+namespace DatabaseManagementSystemDatabaseEngine
 {
     public class Database
     {
@@ -11,7 +12,7 @@ namespace DatabaseEngine
     public class Table
     {
 	    public string Name { get; set; }
-	    public List<IType> Types { get; set; } = new List<IType>();
+        public List<IType> Types { get; set; } = new List<IType>();
 	    public List<string> ColumnNames { get; set; } = new List<string>();
 	    public List<Row> Rows { get; set; } = new List<Row>();
         public List<int> PrimaryKeysIndexes { get; set; } = new List<int>();
@@ -30,7 +31,7 @@ namespace DatabaseEngine
         public bool IsValid(string value);
         public string GetTypeName()
         {
-            return this.GetType().Name;
+            return GetType().Name;
         }
     }
 
@@ -39,6 +40,10 @@ namespace DatabaseEngine
         public bool IsValid(string value)
         {
             return int.TryParse(value, out _);
+        }
+        public string GetTypeName()
+        {
+            return GetType().Name;
         }
 
     }
@@ -50,6 +55,10 @@ namespace DatabaseEngine
             var pattern = @"^[-]?[0-9]+([.]?[0-9]+)?$";
             return Regex.IsMatch(value, pattern);
         }
+        public string GetTypeName()
+        {
+            return GetType().Name;
+        }
     }
 
     public class Char : IType
@@ -58,13 +67,21 @@ namespace DatabaseEngine
         {
             return char.TryParse(value, out _);
         }
+        public string GetTypeName()
+        {
+            return GetType().Name;
+        }
     }
 
-    public class String : IType
+    public class Str : IType
     {
         public bool IsValid(string value)
         {
             return true;
+        }
+        public string GetTypeName()
+        {
+            return GetType().Name;
         }
     }
 
@@ -77,6 +94,10 @@ namespace DatabaseEngine
             return int.TryParse(firstInteger, out var firstConvertedInteger) && int.TryParse(secondInteger, out var secondConvertedInteger) 
                                                                          && firstConvertedInteger <= secondConvertedInteger;
         }
+        public string GetTypeName()
+        {
+            return GetType().Name;
+        }
     }
 
     public class TxtFile : IType
@@ -84,6 +105,10 @@ namespace DatabaseEngine
         public bool IsValid(string value)
         {
             return true;
+        }
+        public string GetTypeName()
+        {
+            return GetType().Name;
         }
     }
 }

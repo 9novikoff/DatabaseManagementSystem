@@ -1,4 +1,4 @@
-﻿using DatabaseEngine;
+﻿using DatabaseManagementSystemDatabaseEngine;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,14 +15,14 @@ namespace DatabaseManagementStudio
 {
     public partial class TableForm : Form
     {
-        private readonly DatabaseEngine.DatabaseEngine _databaseEngine;
+        private readonly DatabaseManagementSystemDatabaseEngine.DatabaseEngine _databaseEngine;
         private readonly NotificationForm notificationForm;
         private readonly DatabaseTablesListform _owner;
         private readonly string _databaseName;
         private readonly bool _isModify = false;
         private readonly string _sourceTableName;
         private Table table;
-        public TableForm(DatabaseEngine.DatabaseEngine engine, NotificationForm form, string databaseName, DatabaseTablesListform owner)
+        public TableForm(DatabaseManagementSystemDatabaseEngine.DatabaseEngine engine, NotificationForm form, string databaseName, DatabaseTablesListform owner)
         {
             InitializeComponent();
             _databaseEngine = engine;
@@ -36,7 +36,7 @@ namespace DatabaseManagementStudio
             table = new Table();
         }
 
-        public TableForm(DatabaseEngine.DatabaseEngine engine, NotificationForm form, string databaseName, DatabaseTablesListform owner, string tableName) : this(engine, form, databaseName, owner)
+        public TableForm(DatabaseManagementSystemDatabaseEngine.DatabaseEngine engine, NotificationForm form, string databaseName, DatabaseTablesListform owner, string tableName) : this(engine, form, databaseName, owner)
         {
             _isModify = true;
             _sourceTableName = tableName;
@@ -46,7 +46,10 @@ namespace DatabaseManagementStudio
 
             var columnHeaders = Enumerable.Range(0, table.ColumnNames.Count).Select(i => table.ColumnNames[i] + $" ({table.Types[i].GetType().Name}) {(table.PrimaryKeysIndexes.Contains(i) ? "*" : "")}").ToList();
             Enumerable.Range(0, table.ColumnNames.Count).ToList().ForEach(i => TableDataGrid.Columns.Add(table.ColumnNames[i], columnHeaders[i]));
-
+            if(table.Rows.Count > TableDataGrid.RowCount)
+            {
+                Enumerable.Range(0, table.Rows.Count - TableDataGrid.RowCount).ToList().ForEach(r => TableDataGrid.Rows.Add());
+            }
             Enumerable.Range(0, table.Rows.Count).ToList().ForEach(i => Enumerable.Range(0, table.ColumnNames.Count).ToList().ForEach(j => TableDataGrid.Rows[i].Cells[j].Value = table.Rows[i].Values[j]));
         }
 
@@ -70,7 +73,7 @@ namespace DatabaseManagementStudio
             var isChecked = IsPrimaryCheckBox.Checked;
 
             table.ColumnNames.Add(columnName);
-            table.Types.Add(Activator.CreateInstance(Type.GetType("DatabaseEngine." + columnType + ", DatabaseEngine")) as IType);
+            table.Types.Add(Activator.CreateInstance(Type.GetType("DatabaseManagementSystemDatabaseEngine." + columnType + ", DatabaseEngine")) as IType);
 
             if (isChecked)
             {
@@ -98,10 +101,15 @@ namespace DatabaseManagementStudio
 
         private void CreateTableButton_Click(object sender, EventArgs e)
         {
+            var newTable = new Table();
             table.Name = TableNameTextBox.Text;
 
-            Enumerable.Range(0, TableDataGrid.Rows.Count - 1).ToList().ForEach(i => table.Rows.Add(new Row()));
-            Enumerable.Range(0, TableDataGrid.RowCount - 1).ToList().ForEach(i => Enumerable.Range(0, table.ColumnNames.Count).ToList().ForEach(j => table.Rows[i].Values.Add(TableDataGrid.Rows[i].Cells[j].Value as string)));
+            table.Rows = new List<Row>();
+            Enumerable.Range(0, TableDataGrid.RowCount).ToList().ForEach(i => table.Rows.Add(new Row()));
+            Enumerable.Range(0, TableDataGrid.RowCount).ToList().ForEach(i => Enumerable.Range(0, table.ColumnNames.Count).ToList().ForEach(j => table.Rows[i].Values.Add(TableDataGrid.Rows[i].Cells[j].Value as string)));
+
+            if (table.Rows.Count > 0 && table.Rows.Last().Values.Any(v => string.IsNullOrEmpty(v)))
+                table.Rows.RemoveAt(table.Rows.Count - 1);
 
             var validationResult = new ValidationResult();
 

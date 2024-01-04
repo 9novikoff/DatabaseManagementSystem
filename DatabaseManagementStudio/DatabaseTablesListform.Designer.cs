@@ -31,11 +31,13 @@
             CancelButton = new Button();
             CreateTableButton = new Button();
             TablesList = new ListBox();
+            RemoveTableButton = new Button();
+            JoinButton = new Button();
             SuspendLayout();
             // 
             // CancelButton
             // 
-            CancelButton.Location = new Point(227, 611);
+            CancelButton.Location = new Point(628, 611);
             CancelButton.Name = "CancelButton";
             CancelButton.Size = new Size(200, 50);
             CancelButton.TabIndex = 0;
@@ -65,12 +67,34 @@
             TablesList.TabIndex = 2;
             TablesList.DoubleClick += TablesList_DoubleClick;
             // 
+            // RemoveTableButton
+            // 
+            RemoveTableButton.Location = new Point(218, 611);
+            RemoveTableButton.Name = "RemoveTableButton";
+            RemoveTableButton.Size = new Size(200, 50);
+            RemoveTableButton.TabIndex = 3;
+            RemoveTableButton.Text = "Remove selected table";
+            RemoveTableButton.UseVisualStyleBackColor = true;
+            RemoveTableButton.Click += RemoveTableButton_Click;
+            // 
+            // JoinButton
+            // 
+            JoinButton.Location = new Point(422, 611);
+            JoinButton.Name = "JoinButton";
+            JoinButton.Size = new Size(200, 50);
+            JoinButton.TabIndex = 4;
+            JoinButton.Text = "Join tables";
+            JoinButton.UseVisualStyleBackColor = true;
+            JoinButton.Click += JoinButton_Click;
+            // 
             // DatabaseTablesListform
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
             ClientSize = new Size(1262, 673);
+            Controls.Add(JoinButton);
+            Controls.Add(RemoveTableButton);
             Controls.Add(TablesList);
             Controls.Add(CreateTableButton);
             Controls.Add(CancelButton);
@@ -84,5 +108,7 @@
         private Button CancelButton;
         private Button CreateTableButton;
         private ListBox TablesList;
+        private Button RemoveTableButton;
+        private Button JoinButton;
     }
 }

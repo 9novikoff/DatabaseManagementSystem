@@ -43,6 +43,7 @@
             button3.TabIndex = 8;
             button3.Text = "Load database";
             button3.UseVisualStyleBackColor = false;
+            button3.Click += button3_Click;
             // 
             // ReviewButton
             // 
