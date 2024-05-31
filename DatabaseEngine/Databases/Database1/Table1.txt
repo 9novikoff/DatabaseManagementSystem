@@ -1,0 +1,6 @@
+
+Integer,Real
+Column1,RealColumn
+0
+
+1,1.5
